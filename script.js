@@ -247,10 +247,18 @@
   }
 
   async function fetchHolderCount() {
+    // Guard against requests that hang (e.g. some CORS-blocked or slow
+    // network conditions can leave fetch() pending far longer than
+    // expected) by racing it against a short timeout.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000);
+
     try {
       const res = await fetch(cfg.api.solscanHolderUrl(cfg.tokenMint), {
         headers: { accept: "application/json" },
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
       const total =
@@ -264,9 +272,10 @@
       throw new Error("Unexpected response shape");
     } catch (err) {
       // Fall back to simulated data — still useful for demo purposes and
-      // keeps the dashboard visually "alive" even if public APIs are down
-      // or blocked by CORS from the browser.
-      setStatus("offline", "Simulated (offline)");
+      // keeps the dashboard visually "alive" even if public APIs are down,
+      // blocked by CORS, or the request timed out.
+      clearTimeout(timeoutId);
+      setStatus("offline", "Simulated");
       simulatedBase += Math.floor(Math.random() * 6);
       return simulatedBase;
     }

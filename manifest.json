@@ -1,0 +1,25 @@
+{
+  "name": "ANSEM Live Tracker",
+  "short_name": "ANSEM Tracker",
+  "description": "Live holder tracker for the $ANSEM Solana token — tracking progress toward 1,000,000 holders.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#0b0e1a",
+  "theme_color": "#0b0e1a",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "assets/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

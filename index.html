@@ -1,37 +1,211 @@
-A
-ANSEM Live Holder Tracker
-Connecting… 
-Solana Live
-Road to 1,000,000 Holders
-Real-time tracking for $ANSEM on Solana. Updated automatically.
+That's the actual bug then — when I attach a file for you to view in this chat interface, it's rendering the HTML live (like a mini preview) instead of showing you the raw source code. That's a display quirk on this end, not a problem with the file itself.
 
-0
-Current Holders
-0.00% Goal: 1,000,000
-24h Change —
-Remaining —
-Last Updated —
-Token Mint
-The official contract address for $ANSEM on Solana.
+Here's how to get the actual raw code instead:
 
-9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump  Copy
-Support the Project
-Send a tip to help keep the tracker running.
+**Option 1 — View page source in the artifact viewer**
+If there's a way to toggle to "code view" or "source view" in the file preview (sometimes a `</>` icon or similar), use that instead of the rendered preview.
 
-CykNaBUPZqPjsFwPffCoriaadondj27arTw7Df9ajNZc  Copy
-Scan to Copy Wallet
-Scan this QR code with a Solana wallet app to quickly send a tip to the address above.
+**Option 2 — Download and open with a text editor**
+If there's a download button on the file preview, download it, then open it with Notepad (right-click the file → Open with → Notepad) instead of double-clicking it (which would open it in a browser and render it).
 
- Copy Wallet Address
-Milestones
-Every milestone on the road to 1,000,000 holders.
+Let me try a different approach — I'll paste the raw code directly into the chat as text instead, so there's no rendering ambiguity:Here's the raw HTML as plain text — select everything below (from `<!DOCTYPE html>` down to the final `</html>`) and copy it directly:
 
-Holder Growth
-Simulated recent trend (live data source may not expose full history).
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>ANSEM Live Tracker — 1,000,000 Holders</title>
+<meta name="description" content="Live holder tracker for the ANSEM Solana token. Real-time progress toward 1,000,000 holders." />
+<meta name="theme-color" content="#0b0e1a" />
 
-About This Tracker
-This dashboard polls public Solana blockchain data sources to display an approximate, near-real-time holder count for the token mint shown above. Holder counts fetched from public indexers can lag the true on-chain state and some endpoints may be rate-limited or unavailable from a browser without a backend proxy — when that happens, this page displays the last known value and clearly indicates connection status. Nothing on this page is financial advice.
+<!-- Open Graph -->
+<meta property="og:title" content="ANSEM Live Tracker" />
+<meta property="og:description" content="Tracking $ANSEM toward 1,000,000 holders on Solana." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="assets/og-image.svg" />
 
-Built with ♥ for the $ANSEM community.
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+<link rel="manifest" href="manifest.json" />
 
-Follow on X
+<link rel="stylesheet" href="style.css" />
+
+<!-- QR Code generator (client-side, no external calls needed at runtime beyond this CDN script) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" defer></script>
+</head>
+<body>
+
+<div class="bg-orbs" aria-hidden="true">
+  <span class="orb orb-1"></span>
+  <span class="orb orb-2"></span>
+  <span class="orb orb-3"></span>
+</div>
+
+<div class="noise-overlay" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div class="brand-text">
+        <span class="brand-name">ANSEM</span>
+        <span class="brand-sub">Live Holder Tracker</span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <span class="status-pill" id="statusPill">
+        <span class="status-dot"></span>
+        <span id="statusText">Connecting…</span>
+      </span>
+      <a class="icon-link" id="xLink" href="#" target="_blank" rel="noopener noreferrer" aria-label="X profile">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- HERO -->
+  <section class="hero glass-card">
+    <div class="hero-top">
+      <span class="chip chip-chain">Solana</span>
+      <span class="chip chip-live" id="heroLiveChip"><span class="pulse-dot"></span><span id="heroLiveText">Live</span></span>
+    </div>
+
+    <h1 class="hero-title">Road to <span class="gradient-text">1,000,000</span> Holders</h1>
+    <p class="hero-sub">Real-time tracking for <strong id="tokenTicker">$ANSEM</strong> on Solana. Updated automatically.</p>
+
+    <div class="holder-count-wrap">
+      <div class="holder-count" id="holderCount">0</div>
+      <div class="holder-count-label">Current Holders</div>
+    </div>
+
+    <div class="progress-outer" role="progressbar" aria-valuemin="0" aria-valuemax="1000000" aria-valuenow="0" id="progressBar">
+      <div class="progress-inner" id="progressFill" style="width:0%"></div>
+      <div class="progress-shine"></div>
+    </div>
+    <div class="progress-meta">
+      <span id="progressPercent">0.00%</span>
+      <span id="progressGoal">Goal: 1,000,000</span>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-card">
+        <span class="stat-label">24h Change</span>
+        <span class="stat-value" id="statChange24h">—</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Remaining</span>
+        <span class="stat-value" id="statRemaining">—</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Last Updated</span>
+        <span class="stat-value" id="statUpdated">—</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- GRID: Mint / Wallet / QR -->
+  <section class="grid-2">
+
+    <div class="glass-card">
+      <h2 class="card-title">Token Mint</h2>
+      <p class="card-desc">The official contract address for $ANSEM on Solana.</p>
+      <div class="copy-row">
+        <code class="mono-address" id="mintAddress">9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump</code>
+        <button class="copy-btn" id="copyMintBtn" data-copy-target="mintAddress" aria-label="Copy mint address">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copy</span>
+        </button>
+      </div>
+      <div class="explorer-links" id="explorerLinks"></div>
+    </div>
+
+    <div class="glass-card">
+      <h2 class="card-title">Support the Project</h2>
+      <p class="card-desc">Send a tip to help keep the tracker running.</p>
+      <div class="copy-row">
+        <code class="mono-address" id="tipAddress">CykNaBUPZqPjsFwPffCoriaadondj27arTw7Df9ajNZc</code>
+        <button class="copy-btn" id="copyTipBtn" data-copy-target="tipAddress" aria-label="Copy tip wallet address">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span>Copy</span>
+        </button>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- QR CODE -->
+  <section class="glass-card qr-card">
+    <div class="qr-text">
+      <h2 class="card-title">Scan to Copy Wallet</h2>
+      <p class="card-desc">Scan this QR code with a Solana wallet app to quickly send a tip to the address above.</p>
+      <button class="copy-btn secondary" id="copyTipBtn2" data-copy-target="tipAddress">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>Copy Wallet Address</span>
+      </button>
+    </div>
+    <div class="qr-wrap">
+      <div id="qrcode" class="qr-box"></div>
+    </div>
+  </section>
+
+  <!-- MILESTONES -->
+  <section class="glass-card">
+    <h2 class="card-title">Milestones</h2>
+    <p class="card-desc">Every milestone on the road to 1,000,000 holders.</p>
+    <div class="milestones-track" id="milestonesTrack"></div>
+  </section>
+
+  <!-- CHART -->
+  <section class="glass-card">
+    <h2 class="card-title">Holder Growth</h2>
+    <p class="card-desc">Simulated recent trend (live data source may not expose full history).</p>
+    <div class="chart-wrap">
+      <canvas id="growthChart" width="800" height="260" role="img" aria-label="Holder growth chart"></canvas>
+    </div>
+  </section>
+
+  <!-- ABOUT / DISCLAIMER -->
+  <section class="glass-card about-card">
+    <h2 class="card-title">About This Tracker</h2>
+    <p class="card-desc">
+      This dashboard polls public Solana blockchain data sources to display an approximate,
+      near-real-time holder count for the token mint shown above. Holder counts fetched from public
+      indexers can lag the true on-chain state and some endpoints may be rate-limited or unavailable
+      from a browser without a backend proxy — when that happens, this page displays the last known
+      value and clearly indicates connection status. Nothing on this page is financial advice.
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>Built with ♥ for the $ANSEM community.</p>
+    <a id="xLinkFooter" href="#" target="_blank" rel="noopener noreferrer">Follow on X</a>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="script.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    });
+  }
+</script>
+</body>
+</html>
+```
+
+Copy everything between the code fences above and paste it into GitHub's editor for `index.html`, replacing all existing content, then commit.

@@ -37,18 +37,14 @@ const ANSEM_CONFIG = {
     1000000
   ],
 
-  // Public data endpoints (no API key required) used to fetch live holder counts.
-  // Solscan's public API is used as the primary source; Solana Beach as fallback.
-  // Note: these endpoints may rate-limit; the app gracefully falls back to
-  // simulated/cached data if all network requests fail (useful for demos or
-  // when running purely on GitHub Pages without a backend proxy).
+  // Backend endpoint that returns the real, live holder count for the
+  // token above. This is a small serverless function (see the
+  // ansem-holder-api repo) backed by Helius, since public browser-side
+  // indexer APIs are unreliable/CORS-blocked for this purpose.
   api: {
-    solscanHolderUrl: (mint) =>
-      `https://public-api.solscan.io/token/holders?tokenAddress=${mint}&limit=1&offset=0`,
-    solscanMetaUrl: (mint) =>
-      `https://public-api.solscan.io/token/meta?tokenAddress=${mint}`,
+    holdersEndpoint: "https://ansem-holder-api.vercel.app/api/holders",
     // Polling interval for live updates, in milliseconds
-    pollIntervalMs: 30000
+    pollIntervalMs: 60000
   },
 
   // Explorer links

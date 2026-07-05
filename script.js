@@ -18,6 +18,7 @@
   const els = {
     statusPill: document.getElementById("statusPill"),
     statusText: document.getElementById("statusText"),
+    heroLiveText: document.getElementById("heroLiveText"),
     tokenTicker: document.getElementById("tokenTicker"),
     holderCount: document.getElementById("holderCount"),
     progressBar: document.getElementById("progressBar"),
@@ -225,6 +226,7 @@
     els.statusPill.classList.remove("online", "offline");
     if (state) els.statusPill.classList.add(state);
     els.statusText.textContent = text;
+    if (els.heroLiveText) els.heroLiveText.textContent = text;
   }
 
   // ---------- Data fetching ----------
@@ -247,24 +249,22 @@
   }
 
   async function fetchHolderCount() {
-    // Guard against requests that hang (e.g. some CORS-blocked or slow
-    // network conditions can leave fetch() pending far longer than
-    // expected) by racing it against a short timeout.
+    // Guard against requests that hang by racing against a timeout. The
+    // backend can take longer than usual on a cold cache (it may need to
+    // paginate through many thousands of holder accounts), so this is
+    // more generous than a typical API timeout.
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
 
     try {
-      const res = await fetch(cfg.api.solscanHolderUrl(cfg.tokenMint), {
+      const res = await fetch(cfg.api.holdersEndpoint, {
         headers: { accept: "application/json" },
         signal: controller.signal,
       });
       clearTimeout(timeoutId);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data = await res.json();
-      const total =
-        data?.total ??
-        data?.data?.total ??
-        (Array.isArray(data) ? data.length : null);
+      const total = data?.holders;
       if (typeof total === "number" && total > 0) {
         setStatus("online", "Live");
         return total;
@@ -272,8 +272,8 @@
       throw new Error("Unexpected response shape");
     } catch (err) {
       // Fall back to simulated data — still useful for demo purposes and
-      // keeps the dashboard visually "alive" even if public APIs are down,
-      // blocked by CORS, or the request timed out.
+      // keeps the dashboard visually "alive" even if the backend is briefly
+      // unavailable or the request timed out.
       clearTimeout(timeoutId);
       setStatus("offline", "Simulated");
       simulatedBase += Math.floor(Math.random() * 6);

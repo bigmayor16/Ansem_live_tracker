@@ -64,3 +64,8 @@ Object.freeze(ANSEM_CONFIG);
 Object.freeze(ANSEM_CONFIG.socials);
 Object.freeze(ANSEM_CONFIG.api);
 Object.freeze(ANSEM_CONFIG.explorers);
+
+// Expose on window so script.js (a separate, non-module script) can read it.
+// A top-level `const` does NOT automatically attach to `window`, so this
+// explicit assignment is required.
+window.ANSEM_CONFIG = ANSEM_CONFIG;

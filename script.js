@@ -459,6 +459,9 @@
     refresh();
     setInterval(refresh, cfg.api.pollIntervalMs);
 
+    fetchAndRenderMarketData();
+    setInterval(fetchAndRenderMarketData, 45000);
+
     window.addEventListener("resize", drawChart);
   }
 

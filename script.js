@@ -103,7 +103,7 @@
       maximumFractionDigits: decimals,
     }).format(n);
   }
-  }
+
 
   // ---------- Toast ----------
   let toastTimer = null;

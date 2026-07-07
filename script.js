@@ -45,7 +45,7 @@
     marketVolume: document.getElementById("marketVolume"),
     dexLink: document.getElementById("dexLink"),
   };
-  };
+  
 
   // ---------- Static content population ----------
   function populateStaticContent() {

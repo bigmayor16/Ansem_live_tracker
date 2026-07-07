@@ -43,6 +43,7 @@ const ANSEM_CONFIG = {
   // indexer APIs are unreliable/CORS-blocked for this purpose.
   api: {
     holdersEndpoint: "https://ansem-holder-api.vercel.app/api/holders",
+    marketEndpoint: "https://ansem-holder-api.vercel.app/api/market",
     // Polling interval for live updates, in milliseconds
     pollIntervalMs: 60000
   },

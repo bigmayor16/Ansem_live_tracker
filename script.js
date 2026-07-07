@@ -37,6 +37,14 @@
     xLink: document.getElementById("xLink"),
     xLinkFooter: document.getElementById("xLinkFooter"),
     growthChart: document.getElementById("growthChart"),
+    marketStatusBadge: document.getElementById("marketStatusBadge"),
+    marketPrice: document.getElementById("marketPrice"),
+    marketChange24h: document.getElementById("marketChange24h"),
+    marketCap: document.getElementById("marketCap"),
+    marketLiquidity: document.getElementById("marketLiquidity"),
+    marketVolume: document.getElementById("marketVolume"),
+    dexLink: document.getElementById("dexLink"),
+  };
   };
 
   // ---------- Static content population ----------
@@ -74,6 +82,27 @@
       notation: "compact",
       maximumFractionDigits: 1,
     }).format(n);
+  }
+
+  function formatUsd(n, opts = {}) {
+    if (n === null || n === undefined || Number.isNaN(n)) return "—";
+    if (opts.compact) {
+      return (
+        "$" +
+        new Intl.NumberFormat("en-US", {
+          notation: "compact",
+          maximumFractionDigits: 2,
+        }).format(n)
+      );
+    }
+    const decimals = n < 0.01 ? 8 : n < 1 ? 6 : 2;
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    }).format(n);
+  }
   }
 
   // ---------- Toast ----------

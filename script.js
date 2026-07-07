@@ -315,6 +315,46 @@
     updateDashboard(holders);
   }
 
+  // ---------- Market data (price / market cap / liquidity) ----------
+  async function fetchAndRenderMarketData() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    try {
+      const res = await fetch(cfg.api.marketEndpoint, {
+        headers: { accept: "application/json" },
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      els.marketPrice.textContent = formatUsd(data.priceUsd);
+      els.marketCap.textContent = formatUsd(data.marketCapUsd, { compact: true });
+      els.marketLiquidity.textContent = formatUsd(data.liquidityUsd, { compact: true });
+      els.marketVolume.textContent = formatUsd(data.volume24hUsd, { compact: true });
+
+      if (typeof data.priceChange24h === "number") {
+        const sign = data.priceChange24h >= 0 ? "+" : "";
+        els.marketChange24h.textContent = `${sign}${data.priceChange24h.toFixed(2)}%`;
+        els.marketChange24h.style.color = data.priceChange24h >= 0 ? "#86efac" : "#fca5a5";
+      } else {
+        els.marketChange24h.textContent = "—";
+      }
+
+      if (data.dexUrl) {
+        els.dexLink.href = data.dexUrl;
+      }
+
+      els.marketStatusBadge.textContent = data.source === "live" ? "Live" : "Cached";
+      els.marketStatusBadge.classList.toggle("online", data.source === "live");
+    } catch (err) {
+      clearTimeout(timeoutId);
+      els.marketStatusBadge.textContent = "Unavailable";
+      els.marketStatusBadge.classList.remove("online");
+    }
+  }
+
   // ---------- Simple growth chart (canvas) ----------
   const chartHistory = [];
   const MAX_POINTS = 30;
